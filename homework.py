@@ -56,7 +56,8 @@ class Training:
 
     def get_spent_calories(self) -> float:
         """Получить количество затраченных калорий."""
-        pass
+        raise NotImplementedError(
+            f"Определите get_spent_calories в {self.__class__.__name__}.")
 
     def show_training_info(self) -> InfoMessage:
         """Вернуть информационное сообщение о выполненной тренировке."""
@@ -71,8 +72,6 @@ class Running(Training):
     """Тренировка: бег."""
     COEFF_CALOR_1: int = 18
     COEFF_CALOR_2: int = 20
-
-    # LEN_STEP: float = 0.65
 
     def __init__(self,
                  action: int,
@@ -161,15 +160,14 @@ def read_package(workout_type: str, data: List[int]) -> Union[Swimming,
         'WLK': SportsWalking
     }
     if workout_type not in classes_types.keys():
-        raise KeyError('Неизвестный тип тренировки')
+        raise KeyError("Неизвестный тип тренировки")
 
     return classes_types[workout_type](*data)
 
 
 def main(training: Training) -> None:
     """Главная функция."""
-    info: InfoMessage = training.show_training_info()
-    print(info.get_message())
+    print(training.show_training_info().get_message())
 
 
 if __name__ == '__main__':
