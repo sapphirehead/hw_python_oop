@@ -4,13 +4,6 @@ from typing import List, Dict, Type, Union
 class InfoMessage:
     """Информационное сообщение о тренировке."""
 
-    def __repr__(self) -> str:
-        return ("Тип тренировки: {type}; "
-                "Длительность: {duration:.3f} ч.; "
-                "Дистанция: {distance:.3f} км; "
-                "Ср. скорость: {speed:.3f} км/ч; "
-                "Потрачено ккал: {calories:.3f}.")
-
     def __init__(self,
                  training_type: str,
                  duration: float,
@@ -23,6 +16,13 @@ class InfoMessage:
         self.distance = distance
         self.speed = speed
         self.calories = calories
+        
+    def __repr__(self) -> str:
+        return ("Тип тренировки: {type}; "
+                "Длительность: {duration:.3f} ч.; "
+                "Дистанция: {distance:.3f} км; "
+                "Ср. скорость: {speed:.3f} км/ч; "
+                "Потрачено ккал: {calories:.3f}.")
 
     def get_message(self) -> str:
         """Вывод сообщений о тренировке на экран"""
@@ -72,8 +72,8 @@ class Training:
 
 class Running(Training):
     """Тренировка: бег."""
-    COEFF_CALOR_1: int = 18
-    COEFF_CALOR_2: int = 20
+    COEFF_CALOR_RUN_1: int = 18
+    COEFF_CALOR_RUN_2: int = 20
 
     def __init__(self,
                  action: int,
@@ -84,17 +84,17 @@ class Running(Training):
 
     def get_spent_calories(self) -> float:
         """Получить количество затраченных калорий."""
-        return ((self.COEFF_CALOR_1
+        return ((self.COEFF_CALOR_RUN_1
                  * self.get_mean_speed()
-                 - self.COEFF_CALOR_2)
+                 - self.COEFF_CALOR_RUN_2)
                 * self.weight / self.M_IN_KM
                 * (self.duration * self.HOUR_IN_MIN))
 
 
 class SportsWalking(Training):
     """Тренировка: спортивная ходьба."""
-    COEFF_CALOR_3: float = 0.035
-    COEFF_CALOR_4: float = 0.029
+    COEFF_CALOR_WALK_3: float = 0.035
+    COEFF_CALOR_WALK_4: float = 0.029
 
     def __init__(self,
                  action: int,
@@ -107,16 +107,16 @@ class SportsWalking(Training):
 
     def get_spent_calories(self) -> float:
         """Получить количество затраченных калорий."""
-        return ((self.COEFF_CALOR_3 * self.weight
+        return ((self.COEFF_CALOR_WALK_3 * self.weight
                  + (self.get_mean_speed() ** 2 // self.height)
-                 * self.COEFF_CALOR_4 * self.weight)
+                 * self.COEFF_CALOR_WALK_4 * self.weight)
                 * (self.duration * self.HOUR_IN_MIN))
 
 
 class Swimming(Training):
     """Тренировка: плавание."""
-    COEFF_CALOR_5: float = 1.1
-    COEFF_CALOR_6: float = 2.0
+    COEFF_CALOR_SWIMM_5: float = 1.1
+    COEFF_CALOR_SWIMM_6: float = 2.0
     LEN_STEP: float = 1.38
 
     def __init__(self,
@@ -139,8 +139,8 @@ class Swimming(Training):
 
     def get_spent_calories(self) -> float:
         """Получить количество затраченных калорий."""
-        return ((self.get_mean_speed() + self.COEFF_CALOR_5)
-                * self.COEFF_CALOR_6 * self.weight)
+        return ((self.get_mean_speed() + self.COEFF_CALOR_SWIMM_5)
+                * self.COEFF_CALOR_SWIMM_6 * self.weight)
 
 
 CustomType = Union[Swimming, Running, SportsWalking]
