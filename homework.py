@@ -16,7 +16,7 @@ class InfoMessage:
         self.distance = distance
         self.speed = speed
         self.calories = calories
-        
+
     def __repr__(self) -> str:
         return ("Тип тренировки: {type}; "
                 "Длительность: {duration:.3f} ч.; "
@@ -108,8 +108,8 @@ class SportsWalking(Training):
     def get_spent_calories(self) -> float:
         """Получить количество затраченных калорий."""
         return ((self.COEFF_CALOR_WALK_3 * self.weight
-                 + (self.get_mean_speed() ** 2 // self.height)
-                 * self.COEFF_CALOR_WALK_4 * self.weight)
+                + (self.get_mean_speed() ** 2 // self.height)
+                * self.COEFF_CALOR_WALK_4 * self.weight)
                 * (self.duration * self.HOUR_IN_MIN))
 
 
