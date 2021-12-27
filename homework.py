@@ -3,11 +3,13 @@ from typing import List, Dict, Type, Union
 
 class InfoMessage:
     """Информационное сообщение о тренировке."""
-    TRAINING_MESSAGE: str = ("Тип тренировки: {type}; "
-                             "Длительность: {duration:.3f} ч.; "
-                             "Дистанция: {distance:.3f} км; "
-                             "Ср. скорость: {speed:.3f} км/ч; "
-                             "Потрачено ккал: {calories:.3f}.")
+
+    def __repr__(self) -> str:
+        return ("Тип тренировки: {type}; "
+                "Длительность: {duration:.3f} ч.; "
+                "Дистанция: {distance:.3f} км; "
+                "Ср. скорость: {speed:.3f} км/ч; "
+                "Потрачено ккал: {calories:.3f}.")
 
     def __init__(self,
                  training_type: str,
@@ -24,11 +26,11 @@ class InfoMessage:
 
     def get_message(self) -> str:
         """Вывод сообщений о тренировке на экран"""
-        return self.TRAINING_MESSAGE.format(type=self.training_type,
-                                            duration=self.duration,
-                                            distance=self.distance,
-                                            speed=self.speed,
-                                            calories=self.calories)
+        return repr(self).format(type=self.training_type,
+                                 duration=self.duration,
+                                 distance=self.distance,
+                                 speed=self.speed,
+                                 calories=self.calories)
 
 
 class Training:
@@ -79,15 +81,12 @@ class Running(Training):
                  weight: float,
                  ) -> None:
         super().__init__(action, duration, weight)
-        self.action = action
-        self.duration = duration
-        self.weight = weight
 
     def get_spent_calories(self) -> float:
         """Получить количество затраченных калорий."""
         return ((self.COEFF_CALOR_1
-                * self.get_mean_speed()
-                - self.COEFF_CALOR_2)
+                 * self.get_mean_speed()
+                 - self.COEFF_CALOR_2)
                 * self.weight / self.M_IN_KM
                 * (self.duration * self.HOUR_IN_MIN))
 
@@ -104,16 +103,13 @@ class SportsWalking(Training):
                  height: float
                  ) -> None:
         super().__init__(action, duration, weight)
-        self.action = action
-        self.duration = duration
-        self.weight = weight
         self.height = height
 
     def get_spent_calories(self) -> float:
         """Получить количество затраченных калорий."""
         return ((self.COEFF_CALOR_3 * self.weight
-                + (self.get_mean_speed() ** 2 // self.height)
-                * self.COEFF_CALOR_4 * self.weight)
+                 + (self.get_mean_speed() ** 2 // self.height)
+                 * self.COEFF_CALOR_4 * self.weight)
                 * (self.duration * self.HOUR_IN_MIN))
 
 
@@ -131,9 +127,6 @@ class Swimming(Training):
                  count_pool: int
                  ) -> None:
         super().__init__(action, duration, weight)
-        self.action = action
-        self.duration = duration
-        self.weight = weight
         self.length_pool = length_pool
         self.count_pool = count_pool
 
@@ -150,11 +143,12 @@ class Swimming(Training):
                 * self.COEFF_CALOR_6 * self.weight)
 
 
-def read_package(workout_type: str, data: List[int]) -> Union[Swimming,
-                                                              Running,
-                                                              SportsWalking]:
+CustomType = Union[Swimming, Running, SportsWalking]
+
+
+def read_package(workout_type: str, data: List[int]) -> CustomType:
     """Прочитать данные полученные от датчиков."""
-    classes_types: Dict[str, Type] = {
+    classes_types: Dict[str, Type[CustomType]] = {
         'SWM': Swimming,
         'RUN': Running,
         'WLK': SportsWalking
@@ -171,12 +165,12 @@ def main(training: Training) -> None:
 
 
 if __name__ == '__main__':
-    packages = [
+    packages: list = [
         ('SWM', [720, 1, 80, 25, 40]),
         ('RUN', [15000, 1, 75]),
         ('WLK', [9000, 1, 75, 180]),
     ]
 
     for workout_type, data in packages:
-        training = read_package(workout_type, data)
+        training: CustomType = read_package(workout_type, data)
         main(training)
